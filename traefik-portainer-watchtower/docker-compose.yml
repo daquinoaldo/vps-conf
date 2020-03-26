@@ -1,0 +1,45 @@
+version: '3.7'
+
+services:
+  traefik:
+    image: traefik:v1.7
+    container_name: traefik
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - default
+      - traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/traefik/traefik.toml:/etc/traefik/traefik.toml
+    labels:
+      - traefik.frontend.headers.customResponseHeaders=Access-Control-Allow-Origin:*
+    stdin_open: true
+    tty: true
+
+  portainer:
+    image: portainer/portainer:latest
+    container_name: portainer
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/traefik/portainer-data:/data
+    labels:
+     - traefik.frontend.rule=Host:portainer.<your-domain>
+    stdin_open: true
+    tty: true
+
+  watchtower:
+    image: v2tec/watchtower:latest
+    container_name: watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    stdin_open: true
+    tty: true
+
+networks:
+  traefik:
+    name: traefik

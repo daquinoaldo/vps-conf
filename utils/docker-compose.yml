@@ -1,0 +1,39 @@
+# This is an example docker-compose for your application
+
+version: "3.7"
+
+services:
+  db:
+    image: mongo             # the MongoDB image from Docker Hub
+    container_name: mongodb  # default: cwd_servicename, i.e. utils_db_1
+    restart: always          # restart the container if crashes or Docker is restarted
+    volumes:
+      - ./db-data:/data/db   # will mount the db-data dir in cwd as volume
+
+  server:
+    build: ./server         # build an image using the files and the Dockerfile in ./server
+    image: myapp/server     # name of the built image (optional)
+    container_name: server  # cannot be used if you want to scale the service
+    restart: always
+    depends_on:     # starts after the db
+      - mongo
+    network:        # attach the container to the traefik network,
+      - traefik     # so that traefik can route traffic to it
+    labels:         # define the domain associated to this service (DNS must point to your server)
+      - traefik.frontend.rule=Host:api.myapp.com
+  
+  frontend:
+    image: nginx
+    container_name: frontend
+    restart: always
+    volumes:   # mount the html folder as read-only (least privilege principle)
+      - ./frontend:/usr/share/nginx/html:ro
+    network:
+      - traefik
+    labels:   # assign two domains to this service, the first is the primary
+      - traefik.frontend.rule=Host:myapp.com,en.myapp.com
+
+networks:  # link the traefik network created in the traefik's docker-compose
+  traefik:
+    external:
+      name: traefik
