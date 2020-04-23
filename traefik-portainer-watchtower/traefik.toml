@@ -1,6 +1,3 @@
-debug = false
-
-logLevel = "ERROR"
 defaultEntryPoints = ["https","http"]
 
 [entryPoints]
@@ -17,6 +14,13 @@ defaultEntryPoints = ["https","http"]
 [docker]
 endpoint = "unix:///var/run/docker.sock"
 watch = true
+network = "traefik"
+# prevent exposing each container by default
+# you'll need to add the `traefik.enable=true` label to containers
+#exposedByDefault = false
+# will expose by default your containers on <container-name>.<your.domain>
+# you can override it with the `trafik.frontend.rule=Host:<your.other.domain>` label
+#domain=<your.domain>
 
 [acme]
 email = "<your-email>"
