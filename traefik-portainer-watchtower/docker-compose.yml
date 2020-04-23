@@ -14,7 +14,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik.toml:/etc/traefik/traefik.toml
-      - ./acme.json:acme.json
+      - ./acme:/etc/traefik/acme
     labels:
       - traefik.frontend.headers.customResponseHeaders=Access-Control-Allow-Origin:*
     stdin_open: true
