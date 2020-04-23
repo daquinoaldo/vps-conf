@@ -23,8 +23,6 @@ services:
       # define the domain associated to this service
       # DNS must point to your server
       - traefik.frontend.rule=Host:api.myapp.com
-      # tell traefik to use its network to reach the container
-      - traefik.docker.network=traefik
 
   frontend:
     image: nginx
