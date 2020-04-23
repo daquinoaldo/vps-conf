@@ -13,7 +13,8 @@ services:
       - traefik
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/traefik/traefik.toml:/etc/traefik/traefik.toml
+      - ./traefik.toml:/etc/traefik/traefik.toml
+      - ./acme.json:acme.json
     labels:
       - traefik.frontend.headers.customResponseHeaders=Access-Control-Allow-Origin:*
     stdin_open: true
@@ -25,7 +26,7 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/traefik/portainer-data:/data
+      - ./portainer-data:/data
     labels:
      - traefik.frontend.rule=Host:portainer.<your-domain>
     stdin_open: true
